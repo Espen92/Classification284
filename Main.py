@@ -6,6 +6,7 @@ import pandas as pd
 import mglearn
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
+from scipy.spatial.distance import cdist
 
 with open('dataset.txt', "r") as data_set:
     data = pd.read_table(data_set, delim_whitespace=True,
@@ -78,6 +79,17 @@ def makeVis(data, classes, tittel):
     plt.scatter(data[:, 0], data[:, 1], s=(100), c=classes, alpha=0.5)
 
 
+def elbowMethod(data_matrix):
+    cluster_centers = []
+    K = range(1, 10)
+    for k in K:
+        kmeanModel = cluster.KMeans(n_clusters=k).fit(data_matrix)
+        kmeanModel.fit(data_matrix)
+        cluster_centers.append(sum(np.min(
+            cdist(data_matrix, kmeanModel.cluster_centers_, 'euclidean'), axis=1)) / data_matrix.shape[0])
+
+
+elbowMethod(matrix)
 reduced_matrix = TSNE_dimensionality_reduction(matrix)
 kMeans_clustered = kMeans_clustering(matrix)
 gauss_clustered = gaussianClustering(matrix)
