@@ -7,8 +7,9 @@ import mglearn
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 from scipy.spatial.distance import cdist
+from sklearn.decomposition import PCA
 
-with open('dataset.txt', "r") as data_set:
+with open('C://Users//Espen//INFO284//Exam2//Code//dataset.txt', "r") as data_set:
     data = pd.read_table(data_set, delim_whitespace=True,
                          header=None)
 
@@ -46,6 +47,10 @@ def TSNE_dimensionality_reduction(data_matrix):
     return TSNE(n_components=2).fit_transform(data_matrix)
 
 
+def PCA_dimensionality_reduction(data_matrix):
+    return PCA(n_components=2).fit_transform(data_matrix)
+
+
 def gaussianClustering(data_matrix):
     gm = mixture.GaussianMixture(
         n_components=numberOfClusters,
@@ -80,19 +85,26 @@ def makeVis(data, classes, tittel):
 
 
 def elbowMethod(data_matrix):
-    cluster_centers = []
+    distortions = []
     K = range(1, 10)
     for k in K:
         kmeanModel = cluster.KMeans(n_clusters=k).fit(data_matrix)
         kmeanModel.fit(data_matrix)
-        cluster_centers.append(sum(np.min(
+        distortions.append(sum(np.min(
             cdist(data_matrix, kmeanModel.cluster_centers_, 'euclidean'), axis=1)) / data_matrix.shape[0])
+
+    plt.plot(K, distortions, 'bx-')
+    plt.xlabel('k')
+    plt.ylabel('Distortions')
+    plt.title('The Elbow Method showing the optimal k')
+    plt.show()
 
 
 elbowMethod(matrix)
-reduced_matrix = TSNE_dimensionality_reduction(matrix)
 kMeans_clustered = kMeans_clustering(matrix)
 gauss_clustered = gaussianClustering(matrix)
+##reduced_matrix = TSNE_dimensionality_reduction(matrix)
+reduced_matrix = PCA_dimensionality_reduction(matrix)
 makeVis(reduced_matrix, kMeans_clustered, "K_means")
 makeVis(reduced_matrix, gauss_clustered, "Gauss")
 plt.show()
