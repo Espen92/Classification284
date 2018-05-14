@@ -9,7 +9,7 @@ from sklearn.manifold import TSNE
 from scipy.spatial.distance import cdist
 from sklearn.decomposition import PCA
 
-with open('C://Users//Espen//INFO284//Exam2//Code//dataset.txt', "r") as data_set:
+with open('dataset.txt', "r") as data_set:
     data = pd.read_table(data_set, delim_whitespace=True,
                          header=None)
 
@@ -76,12 +76,24 @@ def kMeans_clustering(data_matrix):
     return k.fit_predict(data_matrix)
 
 
-def makeVis(data, classes, tittel):
-    plt.figure()
+def makeVis(data, classes, tittel, idx):
+    plt.subplot(2, 1, idx)
+
+    plt.subplots_adjust(
+        hspace=.4,
+        wspace=.2,
+        top=.95
+    )
     plt.title(tittel)
-    plt.xlabel('x LABEL')
-    plt.ylabel('y LABEL')
-    plt.scatter(data[:, 0], data[:, 1], s=(100), c=classes, alpha=0.5)
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.scatter(data[:, 0], data[:, 1],
+                s=50,
+                c=classes,
+                alpha=0.5,
+                edgecolors='none'
+                )
+    # print(data)
 
 
 def elbowMethod(data_matrix):
@@ -100,11 +112,16 @@ def elbowMethod(data_matrix):
     plt.show()
 
 
-elbowMethod(matrix)
-kMeans_clustered = kMeans_clustering(matrix)
-gauss_clustered = gaussianClustering(matrix)
-##reduced_matrix = TSNE_dimensionality_reduction(matrix)
-reduced_matrix = PCA_dimensionality_reduction(matrix)
-makeVis(reduced_matrix, kMeans_clustered, "K_means")
-makeVis(reduced_matrix, gauss_clustered, "Gauss")
-plt.show()
+def main():
+    elbowMethod(matrix)
+    ##reduced_matrix = PCA_dimensionality_reduction(matrix)
+    reduced_matrix = TSNE_dimensionality_reduction(matrix)
+    kMeans_clustered = kMeans_clustering(matrix)
+    gauss_clustered = gaussianClustering(matrix)
+    makeVis(reduced_matrix, kMeans_clustered, "K_means", 1)
+    makeVis(reduced_matrix, gauss_clustered, "Gauss", 2)
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
