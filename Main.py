@@ -20,9 +20,9 @@ matrix = data.drop(7, axis=1).values
 # no default
 numberOfClusters = 3
 #default = 1
-initializations = 1
+initializations = 2
 #default = 100
-iterations = 100
+iterations = 10
 # default 1e-6
 regularization = 1e-2
 # default full
@@ -44,7 +44,7 @@ warm = False
 
 
 def TSNE_dimensionality_reduction(data_matrix):
-    return TSNE(n_components=2).fit_transform(data_matrix)
+    return TSNE(n_components=2, perplexity=12, early_exaggeration=14, learning_rate=100).fit_transform(data_matrix)
 
 
 def PCA_dimensionality_reduction(data_matrix):
@@ -114,7 +114,7 @@ def elbowMethod(data_matrix):
 
 def main():
     elbowMethod(matrix)
-    ##reduced_matrix = PCA_dimensionality_reduction(matrix)
+    #reduced_matrix = PCA_dimensionality_reduction(matrix)
     reduced_matrix = TSNE_dimensionality_reduction(matrix)
     kMeans_clustered = kMeans_clustering(matrix)
     gauss_clustered = gaussianClustering(matrix)

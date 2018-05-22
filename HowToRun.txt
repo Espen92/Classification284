@@ -1,0 +1,2 @@
+This code requires Python 3.6 and a txt file containing the dataset to be present in the same folder as
+main.py this file should be called "dataset.txt"
