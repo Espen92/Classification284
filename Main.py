@@ -19,10 +19,10 @@ matrix = data.drop(7, axis=1).values
 # gauss params
 # no default
 numberOfClusters = 3
-#default = 1
-initializations = 2
-#default = 100
-iterations = 10
+# default = 1
+initializations = 1
+# default = 100
+iterations = 100
 # default 1e-6
 regularization = 1e-2
 # default full
@@ -112,12 +112,25 @@ def elbowMethod(data_matrix):
     plt.show()
 
 
+def numberInEachCluster(numberOfClusters, clust):
+    flat_ = list(clust.flatten())
+    output = f""
+    for i in range(numberOfClusters):
+        output += f" In cluster {i}: {flat_.count(i)} units"
+
+    return output
+
+
 def main():
-    elbowMethod(matrix)
+    # elbowMethod(matrix)
     #reduced_matrix = PCA_dimensionality_reduction(matrix)
     reduced_matrix = TSNE_dimensionality_reduction(matrix)
+
     kMeans_clustered = kMeans_clustering(matrix)
     gauss_clustered = gaussianClustering(matrix)
+
+    print(numberInEachCluster(numberOfClusters, gauss_clustered))
+    print(numberInEachCluster(numberOfClusters, kMeans_clustered))
     makeVis(reduced_matrix, kMeans_clustered, "K_means", 1)
     makeVis(reduced_matrix, gauss_clustered, "Gauss", 2)
     plt.show()
