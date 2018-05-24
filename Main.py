@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 from scipy.spatial.distance import cdist
 from sklearn.decomposition import PCA
+import copy
+import tkinter
+
 
 with open('dataset.txt', "r") as data_set:
     data = pd.read_table(data_set, delim_whitespace=True,
@@ -16,7 +19,7 @@ with open('dataset.txt', "r") as data_set:
 
 matrix = data.drop(7, axis=1).values
 
-# gauss params
+"""Following are all the parameters for the Gaussian clustering"""
 # no default
 numberOfClusters = 3
 # default = 1
@@ -26,13 +29,13 @@ iterations = 100
 # default 1e-6
 regularization = 1e-2
 # default full
-covarType = "full"
+covarType = "spherical"
 # default 1e-3
 covarTreshold = 1e-3
 # default "kmeans"
 method = "kmeans"
 # optional
-initialWeights = None
+initialWeights = [.3, .3, .4]
 # optional
 means = None
 # optional
@@ -112,25 +115,33 @@ def elbowMethod(data_matrix):
     plt.show()
 
 
-def numberInEachCluster(numberOfClusters, clust):
+def numberInEachCluster(title_, clust):
     flat_ = list(clust.flatten())
-    output = f""
-    for i in range(numberOfClusters):
-        output += f" In cluster {i}: {flat_.count(i)} units"
+    output = f""" {title_}
+                 Original Category 1: 
+                 Cluster 1: {flat_[0:70].count(0)} units, Cluster 2: {flat_[0:70].count(1)} units, Cluster 3: {flat_[0:70].count(2)}
+                 Original Category 2:
+                 Cluster 1: {flat_[70:140].count(0)} units, Cluster 2: {flat_[70:140].count(1)} units, Cluster 3: {flat_[70:140].count(2)}
+                 Original Category 3;
+                 Cluster 1: {flat_[140:210].count(0)} units, Cluster 2: {flat_[140:210].count(1)} units, Cluster 3: {flat_[140:210].count(2)}
+                 """
 
     return output
 
 
 def main():
-    # elbowMethod(matrix)
-    #reduced_matrix = PCA_dimensionality_reduction(matrix)
-    reduced_matrix = TSNE_dimensionality_reduction(matrix)
 
-    kMeans_clustered = kMeans_clustering(matrix)
-    gauss_clustered = gaussianClustering(matrix)
+    copy_one = copy.deepcopy(matrix)
+    copy_two = copy.deepcopy(matrix)
+    copy_three = copy.deepcopy(matrix)
+    copy_four = copy.deepcopy(matrix)
+    elbowMethod(copy_four)
 
-    print(numberInEachCluster(numberOfClusters, gauss_clustered))
-    print(numberInEachCluster(numberOfClusters, kMeans_clustered))
+    kMeans_clustered = kMeans_clustering(copy_one)
+    gauss_clustered = gaussianClustering(copy_two)
+    reduced_matrix = TSNE_dimensionality_reduction(copy_three)
+    #reduced_matrix = PCA_dimensionality_reduction(copy_three)
+
     makeVis(reduced_matrix, kMeans_clustered, "K_means", 1)
     makeVis(reduced_matrix, gauss_clustered, "Gauss", 2)
     plt.show()
