@@ -9,10 +9,13 @@ from sklearn.manifold import TSNE
 from scipy.spatial.distance import cdist
 from sklearn.decomposition import PCA
 import copy
-import tkinter
+from tkinter import filedialog
+from tkinter import Tk
 
-
-with open('dataset.txt', "r") as data_set:
+root = Tk()
+root.filename = filedialog.askopenfilename(
+    initialdir=".", title="Select data set")
+with open(root.filename, "r") as data_set:
     data = pd.read_table(data_set, delim_whitespace=True,
                          header=None)
 
