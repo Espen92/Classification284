@@ -13,12 +13,13 @@ from tkinter import filedialog
 from tkinter import Tk
 
 root = Tk()
+root.withdraw()
 root.filename = filedialog.askopenfilename(
     initialdir=".", title="Select data set")
 with open(root.filename, "r") as data_set:
     data = pd.read_table(data_set, delim_whitespace=True,
                          header=None)
-
+root.destroy()
 
 matrix = data.drop(7, axis=1).values
 
@@ -118,32 +119,16 @@ def elbowMethod(data_matrix):
     plt.show()
 
 
-def numberInEachCluster(title_, clust):
-    flat_ = list(clust.flatten())
-    output = f""" {title_}
-                 Original Category 1: 
-                 Cluster 1: {flat_[0:70].count(0)} units, Cluster 2: {flat_[0:70].count(1)} units, Cluster 3: {flat_[0:70].count(2)}
-                 Original Category 2:
-                 Cluster 1: {flat_[70:140].count(0)} units, Cluster 2: {flat_[70:140].count(1)} units, Cluster 3: {flat_[70:140].count(2)}
-                 Original Category 3;
-                 Cluster 1: {flat_[140:210].count(0)} units, Cluster 2: {flat_[140:210].count(1)} units, Cluster 3: {flat_[140:210].count(2)}
-                 """
-
-    return output
-
-
 def main():
 
-    copy_one = copy.deepcopy(matrix)
-    copy_two = copy.deepcopy(matrix)
-    copy_three = copy.deepcopy(matrix)
-    copy_four = copy.deepcopy(matrix)
-    elbowMethod(copy_four)
+    elbowMethod(matrix)
 
-    kMeans_clustered = kMeans_clustering(copy_one)
-    gauss_clustered = gaussianClustering(copy_two)
-    reduced_matrix = TSNE_dimensionality_reduction(copy_three)
-    #reduced_matrix = PCA_dimensionality_reduction(copy_three)
+    kMeans_clustered = kMeans_clustering(matrix)
+
+    gauss_clustered = gaussianClustering(matrix)
+
+    reduced_matrix = TSNE_dimensionality_reduction(matrix)
+    # reduced_matrix = PCA_dimensionality_reduction(matrix)
 
     makeVis(reduced_matrix, kMeans_clustered, "K_means", 1)
     makeVis(reduced_matrix, gauss_clustered, "Gauss", 2)
